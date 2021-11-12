@@ -17,6 +17,8 @@ class MainWindowController {
     - AddEditWindowController addEditWindowController
     - int index
     - FileChooser fileChooser
+    - File file
+    - FilesInputOutput filesInputOutput
 
     + @FXML removeOneItemButtonPushed ()
     + @FXML addItemButtonPushed ()

@@ -175,10 +175,24 @@ public class AddEditWindowController {
     }
 
     //this method is used to check if the serial number already existed in the list
+    public boolean isNameAlreadyExisted (List<ItemObject> list, String nameInput, int index, boolean isAdding) {
+        //create a loop through the size of list in the listWrapper
+        //if it already existed this could mean two things:
+        //  user is editing, editing valid info into another valid info of THE SAME INDEX
+        //      if the index found in the loop is the same as given index, it's okay, break out of loop
+        //      if the index found is something else, not the given index, return true
+        //  user is adding, into something that already existed
+        //      if so, return true
+
+        //otherwise,
+        return false; //meaning that number hasn't existed yet
+    }
+
+    //this method is used to check if the serial number already existed in the list
     public boolean isNumberAlreadyExisted (List<ItemObject> list, String numberInput, int index, boolean isAdding) {
         //create a loop through the size of list in the listWrapper
         //if it already existed this could mean two things:
-        //  user is editing, editing valid info into another valid info of THE SAME INDEX(should be
+        //  user is editing, editing valid info into another valid info of THE SAME INDEX
         //      if the index found in the loop is the same as given index, it's okay, break out of loop
         //      if the index found is something else, not the given index, return true
         //  user is adding, into something that already existed

@@ -52,7 +52,7 @@ public class FilesInputOutput {
     }
 
     //after already checked that the file is extension of .txt, and we are trying to load it
-    public void loadFromTSV(File file, List<ItemObject> list){
+    public List<ItemObject> loadFromTSV(File file, List<ItemObject> list){
         //loading will reflect from saving process
         //set Scanner to the file location given
         //read each line at a time
@@ -64,15 +64,19 @@ public class FilesInputOutput {
         //  set string[2] to the price string
         //  create a new ItemObject using those elements
         //  add the ItemObject to the list
+
+        return null;
     }
 
     //after already checked that the file is extension of .json, and we are trying to load it
-    public void loadFromJSON(File file, List<ItemObject> list){
+    public List<ItemObject> loadFromJSON(File file, List<ItemObject> list){
         //I need to figure this out....later
+        return null;
     }
 
     //after already checked that the file is extension of .html, and we are trying to load it
-    public void loadFromHTML(File file, List<ItemObject> list){
+    public List<ItemObject> loadFromHTML(File file, List<ItemObject> list){
         //I need to figure this out....later
+        return null;
     }
 }

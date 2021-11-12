@@ -5,6 +5,7 @@
 
 package baseline;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -12,7 +13,13 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainWindowController {
 
@@ -44,132 +51,251 @@ public class MainWindowController {
 
     //other parameters... like
     private FileChooser fileChooser = new FileChooser();
+    private File file;
+    private FilesInputOutput filesInputOutput = new FilesInputOutput();
 
-    // maybe added here, or as local variable
-    // it depends on where it's actually being used
 
     @FXML
-    void removeOneItemButtonPushed(ActionEvent event) {
+    void removeOneItemButtonPushed() {
         //when removeOneItem button is pushed
         //there MUST be a selected item in the tableView (from listener)
 
         //check the index
         //if index is less than zero (default as negative) meaning there's nothing selected in tableView
-        //  display errorDisplayLabel to prompt user "you must select an item from the list before removing"
-        //  end method, do not do anything else
+        if(index < 0 || listWrapper.getIndex()<0) {
+            //  display errorDisplayLabel to prompt user "you must select an item from the list before removing"
+            errorDisplayLabel.setText("you must select an item from the list before removing");
+            //  end method, do not do anything else
+        }
+            //if index is zero or greater, meaning there's something selected in the tableView
+        else {
+            //ensure to set errorDisplayLabel to empty string
+            errorDisplayLabel.setText("");
 
-        //if index is zero or greater, meaning there's something selected in the tableView
-        //  call method removeOneItem in ListWrapper class to remove that index from the list
-        //      the function should take in a (List, index)
-        //  remove the index from observableList also, to update the tableView
+            //  call method removeOneItem in ListWrapper class to remove that index from the list
+            //      the function should take in a (List, index)
+            listWrapper.removeOneItem(listWrapper.getListOfItem(),index);
+            //  remove the index from observableList also, to update the tableView
+            observableList.remove(index);
+        }
     }
 
     @FXML
-    void addItemButtonPushed(ActionEvent event) {
+    void addItemButtonPushed() {
         //when addItem button is pushed, no need to check in the tableView
 
         //set value 'isAdding' in listWrapper to 'true', since we are adding
         //isAdding will determine the setup in the scene whether it's being added or edited
+        listWrapper.setAdding(false);
 
         //change scene to AddEditWindow.fxml process by calling changeScene method
+        changeScene();
     }
 
     @FXML
-    void editItemButtonPushed(ActionEvent event) {
+    void editItemButtonPushed() {
         //when editItem button is pushed
         //there MUST be a selected item in the tableView (from listener)
 
         //check the index
         //if index is less than zero (default as negative) meaning there's nothing selected in tableView
-        //  display errorDisplayLabel to prompt user "you must select an item to edit its information"
-        //  end method, do not do anything else
-
+        if (index < 0 || listWrapper.getIndex()<0) {
+            //  display errorDisplayLabel to prompt user "you must select an item to edit its information"
+            errorDisplayLabel.setText("you must select an item to edit its information");
+            //  end method, do not do anything else
+        }
         //if index is zero or greater, meaning there's something selected in the tableView
-        //  set value 'isAdding' in listWrapper to 'false', since we are editing
-        //  change scene to AddEditWindow.fxml process by calling changeScene method
+        else {
+            //ensure to set errorDisplayLabel to empty string
+            errorDisplayLabel.setText("");
+
+            //  set value 'isAdding' in listWrapper to 'false', since we are editing
+            listWrapper.setAdding(false);
+            //  change scene to AddEditWindow.fxml process by calling changeScene method
+            changeScene();
+        }
     }
 
     @FXML
-    void removeAllItemButtonPushed(ActionEvent event) {
+    void removeAllItemButtonPushed() {
         //when removeAllItem button is pushed, no need to check in the tableView
 
         //call method removeAllItem in ListWrapper class, passed in the list from listWrapper
+        listWrapper.getListOfItem().clear();
         //clear all data in the observableList to update tableView
+        observableList.clear();
     }
 
     @FXML
-    void saveButtonPushed(ActionEvent event) {
+    void saveButtonPushed() {
         //when save button is pushed, we will be calling a fileChooser to get a File from it
-        //if File is null, means user doesn't try to save file (click X (close) or cancel)
-        //  set errorDisplayLabel to let user know that "save failed, please try again"
-        //  end method
+        fileChooser.setTitle("save file");
+        Stage stage = (Stage) errorDisplayLabel.getScene().getWindow();
+        file = fileChooser.showSaveDialog(stage);
 
+        //if File is null, means user doesn't try to save file (click X (close) or cancel)
+        if (file == null) {
+            //  set errorDisplayLabel to let user know that "save failed, please try again"
+            errorDisplayLabel.setText("save failed, please try again");
+            //  end method
+        }
         //if file is not null,
-        //check if the string (path name) in that file has what extension and calls FilesInputOutput method accordingly
-        //for .txt, call saveListAsTSV in FilesInputOutput class
-        //for .html, call saveListAsHTML in FilesInputOutput class
-        //for .json, call saveListAsJSON in FilesInputOutput class
+        else {
+            //ensure to set errorDisplayLabel to empty string
+            errorDisplayLabel.setText("");
+
+            //check if the string (path name) in that file has what extension and calls FilesInputOutput method accordingly
+            if (file.toString().equals(".txt")) {
+                //for .txt, call saveListAsTSV in FilesInputOutput class
+                filesInputOutput.saveListAsTSV(file,listWrapper.getListOfItem());
+            } else if (file.toString().equals(".json")) {
+                //for .html, call saveListAsHTML in FilesInputOutput class
+                filesInputOutput.saveListAsHTML(file,listWrapper.getListOfItem());
+            } else if (file.toString().equals(".html")) {
+                //for .json, call saveListAsJSON in FilesInputOutput class
+                filesInputOutput.saveListAsJSON(file,listWrapper.getListOfItem());
+            }
+        }
     }
 
     @FXML
-    void loadButtonPushed(ActionEvent event) {
+    void loadButtonPushed() {
         //when load button is pushed, we will be calling a fileChooser to get a File from it
+        fileChooser.setTitle("save file");
+        Stage stage = (Stage) errorDisplayLabel.getScene().getWindow();
+        file = fileChooser.showOpenDialog(stage);
+
         //if File is null, means user doesn't try to save file (click X (close) or cancel)
-        //  set errorDisplayLabel to let user know that "load failed, please try again"
-        //  end method
+        if (file == null) {
+            //  set errorDisplayLabel to let user know that "load failed, please try again"
+            errorDisplayLabel.setText("load failed, please try again");
+            //  end method
+        }
 
         //if file is not null,
-        //clear actual list
-        //check if the string (path name) in that file has what extension and calls FilesInputOutput method accordingly
-        //for .txt, call loadFromTSV in FilesInputOutput class
-        //for .html, call loadFromHTML in FilesInputOutput class
-        //for .json, call loadFromJSON in FilesInputOutput class
+        else {
+            //ensure to set errorDisplayLabel to empty string
+            errorDisplayLabel.setText("");
+
+            //clear actual list and observableList
+            listWrapper.getListOfItem().clear();
+            observableList.clear();
+
+            List<ItemObject> tempList = new ArrayList<>();
+            //check if the string (path name) in that file has what extension and calls FilesInputOutput method accordingly
+            if (file.toString().equals(".txt")) {
+                //for .txt, call loadFromTSV in FilesInputOutput class
+                tempList = filesInputOutput.loadFromTSV(file,listWrapper.getListOfItem());
+            } else if (file.toString().equals(".html")) {
+                //for .html, call loadFromHTML in FilesInputOutput class
+                tempList = filesInputOutput.loadFromHTML(file,listWrapper.getListOfItem());
+            } else if (file.toString().equals(".json")) {
+                //for .json, call loadFromJSON in FilesInputOutput class
+                tempList = filesInputOutput.loadFromJSON(file,listWrapper.getListOfItem());
+            }
+
+            //check the size of the list that is returned from the function
+            if (tempList.isEmpty()) {
+                errorDisplayLabel.setText("the file is empty, or contaminated: file cannot be opened");
+            } else {
+                //ensure to set errorDisplayLabel to empty string
+                errorDisplayLabel.setText("");
+
+                //copy each element of that list
+                for(int i = 0; i< tempList.size(); i++ ) {
+                    listWrapper.getListOfItem().add(tempList.get(i));
+                }
+
+                //set the observableList to the list
+                observableList = FXCollections.observableArrayList(listWrapper.getListOfItem());
+                //this is the update the tableView to the loaded list
+                tableView.setItems(observableList);
+                System.out.println("file is loaded successfully, and replaced the current");
+            }
+        }
     }
 
     @FXML
-    void searchNameButtonPushed(ActionEvent event) {
+    void searchNameButtonPushed() {
         //when searchName button is pushed, no need to check in the tableView
 
         //read the string from searchNameTextField
+        String nameInput = searchNameTextField.getText();
+
         //call method searchName in ListWrapper class, passing in actual list as (list, string)
         //where the string is what's read from the textField
-
+        int indexResult = listWrapper.searchName(listWrapper.getListOfItem(),nameInput);
         //check the return value
         //if method return -1, means search result is not found
-        //  set errorDisplayLabel to prompt user "Sorry! we don't have any item with that name in stock!"
+        if(indexResult < 0) {
+            //  set errorDisplayLabel to prompt user "Sorry! we don't have any item with that name in stock!"
+            errorDisplayLabel.setText("Sorry! we don't have any item with that name in stock!");
+        }
         //if method return non-positive, which represents the index found in the list
-        //create a tempList, add the item in actual list from that index to it
-        //clear observableList, this will clear the tableView
-        //assigned the observableList with values within tempList (should have only one item to it) to set the tableView
+        else {
+            //ensure to set errorDisplayLabel to empty string
+            errorDisplayLabel.setText("");
+
+            //create a tempList, add the item in actual list from that index to it
+            List<ItemObject> tempList = new ArrayList<>();
+            tempList.add(new ItemObject(listWrapper.getListOfItem().get(indexResult).getSerialNumber(),
+                    listWrapper.getListOfItem().get(indexResult).getName(),
+                    listWrapper.getListOfItem().get(indexResult).getPrice()));
+            //clear observableList, this will clear the tableView
+            observableList.clear();
+            //assigned the observableList with values within tempList (should have only one item to it) to set the tableView
+            observableList = FXCollections.observableArrayList(tempList);
+            tableView.setItems(observableList);
+        }
     }
 
     @FXML
-    void searchNumberButtonPushed(ActionEvent event) {
+    void searchNumberButtonPushed() {
         //when searchNumber button is pushed, no need to check in the tableView
 
         //read the string from searchNumberTextField
+        String numberInput = searchNumberTextField.getText();
 
         //check if the format that user entered matches the given format
         //call serialNumberValidator in the AddEditWindowController class
         //pass in the String read from the textField
+        if(!(addEditWindowController.serialNumberValidator(listWrapper.getListOfItem(),numberInput))) {
+            //if string is invalid (return value is false)
+            //  set the errorDisplayLabel to prompt user as "you have entered invalid format serialNumber"
+            errorDisplayLabel.setText("you have entered invalid format serialNumber");
+            return;
+        }
         //if string is valid (returned value is true), proceed
-        //if string is invalid (return value is false)
-        //  set the errorDisplayLabel to prompt user as "you have entered invalid format serialNumber"
 
         //call method searchNumber in ListWrapper class, passing in actual list as (list, string)
         //where the string is what's read from the textField
-
+        int indexResult = listWrapper.searchNumber(listWrapper.getListOfItem(),numberInput);
         //check the return value
         //if method return -1, means search result is not found
-        //  set errorDisplayLabel to prompt user "Sorry! we don't have any item with that serial number in stock!"
+        if(indexResult < 0) {
+            //  set errorDisplayLabel to prompt user "Sorry! we don't have any item with that serial number in stock!"
+            errorDisplayLabel.setText("Sorry! we don't have any item with that serial number in stock!");
+        }
         //if method return non-positive, which represents the index found in the list
-        //create a tempList, add the item in actual list from that index to it
-        //clear observableList, this will clear the tableView
-        //assigned the observableList with values within tempList (should have only one item to it) to set the tableView
+        else {
+            //ensure to set errorDisplayLabel to empty string
+            errorDisplayLabel.setText("");
+
+            //create a tempList, add the item in actual list from that index to it
+            List<ItemObject> tempList = new ArrayList<>();
+            tempList.add(new ItemObject(listWrapper.getListOfItem().get(indexResult).getSerialNumber(),
+                    listWrapper.getListOfItem().get(indexResult).getName(),
+                    listWrapper.getListOfItem().get(indexResult).getPrice()));
+            //clear observableList, this will clear the tableView
+            observableList.clear();
+            //assigned the observableList with values within tempList (should have only one item to it) to set the tableView
+            observableList = FXCollections.observableArrayList(tempList);
+            tableView.setItems(observableList);
+        }
     }
 
     @FXML
-    void sortByNameButtonPushed(ActionEvent event) {
+    void sortByNameButtonPushed() {
         //call a sortListByName method from ListSorter class pass in actual list
         //the returned list will be a sorted version of actual list
         //clear observableList (to clear tableView)
@@ -177,7 +303,7 @@ public class MainWindowController {
     }
 
     @FXML
-    void sortByNumberButtonPushed(ActionEvent event) {
+    void sortByNumberButtonPushed() {
         //call a sortListByNumber method from ListSorter class pass in actual list
         //the returned list will be a sorted version of actual list
         //clear observableList (to clear tableView)
@@ -185,7 +311,7 @@ public class MainWindowController {
     }
 
     @FXML
-    void sortByPriceButtonPushed(ActionEvent event) {
+    void sortByPriceButtonPushed() {
         //call a sortListByPrice method from ListSorter class pass in actual list
         //the returned list will be a sorted version of actual list
         //clear observableList (to clear tableView)
@@ -220,23 +346,35 @@ public class MainWindowController {
     }
 
     public void initialize() {
-        //this method is called automatically each time the scene MainWindowController.fxml
-
         //set errorDisplayMessage to emptyString
+        errorDisplayLabel.setText("");
 
         //init fileChooser to accept extensions of .json, .html and .txt
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("text files", "*.txt"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("html files", "*.html"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("json files", "*.json"));
 
         //initialize observableList with the current information in the list in listWrapper
+        observableList = FXCollections.observableArrayList(listWrapper.getListOfItem());
 
         //set up listener to tableView, to listen and get the index whenever user select something in the tableView
         //  each time something is selected, set 'index' to it (used in this class)
         //  also update the 'index' within listWrapper as well (used to pass info between classes)
+        tableView.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldValue, newValue) -> {
+                    index = observableList.indexOf(tableView.getSelectionModel().getSelectedItem());
+                    listWrapper.setIndex(index);
+                });
 
         //set all columns in the tableView to look for a certain object in each ItemObject
         //itemNumberColumn is looking for 'serialNumber'
+        itemNumberColumn.setCellValueFactory(new PropertyValueFactory<>("serialNumber"));
         //itemNameColumn is looking for 'name'
+        itemNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         //itemNameColumn is looking for 'price'
+        itemPriceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
 
         //initialize the tableView
+        tableView.setItems(observableList);
     }
 }
