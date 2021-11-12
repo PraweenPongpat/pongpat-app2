@@ -31,7 +31,9 @@ public class AddEditWindowController {
 
     @FXML
     void cancelButtonPushed(ActionEvent event) {
-
+        //when cancel button is pushed,
+        //simply call changeScene to change the scene back
+        //since there is no new information to be passed
     }
 
     @FXML

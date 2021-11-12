@@ -12,6 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.stage.FileChooser;
 
 public class MainWindowController {
 
@@ -20,34 +21,35 @@ public class MainWindowController {
     @FXML
     private Label errorDisplayLabel;
     @FXML
-    private TableColumn<?, ?> itemNameColumn;
+    private TableColumn<ItemObject, String> itemNameColumn;
     @FXML
-    private TableColumn<?, ?> itemNumberColumn;
+    private TableColumn<ItemObject, String> itemNumberColumn;
     @FXML
-    private TableColumn<?, ?> itemPriceColumn;
+    private TableColumn<ItemObject, String> itemPriceColumn;
     @FXML
     private TextField searchNameTextField;
     @FXML
     private TextField searchNumberTextField;
     @FXML
-    private TableView<?> tableView;
+    private TableView<ItemObject> tableView;
 
     //listWrapper class that contain actual object for the app
     private ListWrapper listWrapper = new ListWrapper();
     //observableList uses to display items to tableView
     private ObservableList<ItemObject> observableList;
     //AddEditWindowController class's methods will be needed uses to pass information between scenes
-    AddEditWindowController addEditWindowController = new AddEditWindowController();
+    private AddEditWindowController addEditWindowController = new AddEditWindowController();
     //index to keep up with the index chosen in the tableView
     private int index = -1;  //always default -1, meaning that nothing is selected in the tableView yet
 
     //other parameters... like
-    // Scanner, File, FileChooser, ...
+    private FileChooser fileChooser = new FileChooser();
+
     // maybe added here, or as local variable
     // it depends on where it's actually being used
 
     @FXML
-    void RemoveOneItemButtonPushed(ActionEvent event) {
+    void removeOneItemButtonPushed(ActionEvent event) {
         //when removeOneItem button is pushed
         //there MUST be a selected item in the tableView (from listener)
 

@@ -44,7 +44,7 @@
                      </VBox.margin>
                   </Label>
                   <Button mnemonicParsing="false" onAction="#editItemButtonPushed" text="Edit Item" />
-                  <Button mnemonicParsing="false" onAction="#RemoveOneItemButtonPushed" text="Remove an Item" />
+                  <Button mnemonicParsing="false" onAction="#removeOneItemButtonPushed" text="Remove an Item" />
                   <Label prefHeight="20.0" prefWidth="65.0" text="sort items">
                      <font>
                         <Font name="System Italic" size="14.0" />

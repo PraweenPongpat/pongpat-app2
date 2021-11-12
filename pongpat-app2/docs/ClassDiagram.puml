@@ -1,0 +1,116 @@
+@startuml
+class InventoryManagementApplication {
+    + main (String[])
+    + start (Stage)
+}
+
+class MainWindowController {
+    - @FXML Label errorDisplayLabel
+    - @FXML TableColumn<ItemObject, String> itemNameColumn
+    - @FXML TableColumn<ItemObject, String> itemNumberColumn
+    - @FXML TableColumn<ItemObject, String> itemPriceColumn
+    - @FXML TextField searchNameTextField
+    - @FXML TextField searchNumberTextField
+    - @FXML TableView<ItemObject> tableView
+    - ListWrapper listWrapper
+    - ObservableList observableList
+    - AddEditWindowController addEditWindowController
+    - int index
+    - FileChooser fileChooser
+
+    + @FXML removeOneItemButtonPushed ()
+    + @FXML addItemButtonPushed ()
+    + @FXML editItemButtonPushed ()
+    + @FXML removeAllItemButtonPushed ()
+    + @FXML saveButtonPushed ()
+    + @FXML loadButtonPushed ()
+    + @FXML searchNameButtonPushed ()
+    + @FXML searchNumberButtonPushed ()
+    + @FXML sortByNameButtonPushed ()
+    + @FXML sortByNumberButtonPushed ()
+    + @FXML sortByPriceButtonPushed ()
+    + initializeListWrapper (ListWrapper)
+    - changeScene ()
+    + initialize ()
+}
+
+class AddEditWindowController {
+    - @FXML Label errorDisplayLabel
+    - @FXML TextField itemNameTextField
+    - @FXML TextField itemNumberTextField
+    - @FXML TextField itemPriceTextField
+    - @FXML Label topicLabel
+    - ListWrapper listWrapper
+    + int index
+
+    + @FXML cancelButtonPushed ()
+    + @FXML doneButtonPushed ()
+    + initializeListWrapper (ListWrapper)
+    - changeScene ()
+    + initialize ()
+    + boolean serialNumberValidator (List<ItemObject>, String)
+    + boolean nameLengthValidator (List<ItemObject>, String)
+    + boolean priceValidator (List<ItemObject>, String)
+    + boolean isNumberAlreadyExisted (List<ItemObject>, String, int, boolean)
+    + addItemToList (List<ItemObject>, String, String, String)
+    + void editItemToList (List<ItemObject>, String, String, String,int)
+}
+
+class FilesInputOutput {
+    - Formatter writer
+    - Scanner scanner
+
+    + saveListAsTSV (File, List<ItemObject>)
+    + saveListAsJSON (File, List<ItemObject>)
+    + saveListAsHTML (File, List<ItemObject>)
+    + loadFromTSV (File, List<ItemObject>)
+    + loadFromJSON (File, List<ItemObject>)
+    + loadFromHTML (File, List<ItemObject>)
+}
+
+class ItemObject {
+    - String serialNumber
+    - String name
+    - String price
+
+    + ItemObject (String,String,String)
+    + setSerialNumber (String)
+    + setName (String)
+    + setPrice (String)
+
+    + String getSerialNumber()
+    + String getName()
+    + String getPrice()
+}
+
+class ListSorter {
+    + List<ItemObject> sortListByName (List<ItemObject>)
+    + List<ItemObject> sortListByNumber(List<ItemObject>)
+    + List<ItemObject> sortListByPrice(List<ItemObject>)
+}
+
+class ListWrapper {
+    - List<ItemObject> listOfItem
+    - boolean isAdding
+    - int index
+
+    + setIndex (int)
+    + setAdding (boolean)
+    + int getIndex ()
+    + List<ItemObject> getListOfItem ()
+    + boolean isAdding ()
+    + removeOneItem (List<ItemObject>, int)
+    + int searchName(List<ItemObject>, String)
+    + int searchNumber(List<ItemObject>, String)
+}
+
+InventoryManagementApplication -- MainWindowController
+MainWindowController -- AddEditWindowController
+MainWindowController -- ListWrapper
+MainWindowController -- ItemObject
+MainWindowController -- ListSorter
+MainWindowController -- FilesInputOutput
+AddEditWindowController -- ListWrapper
+AddEditWindowController -- ItemObject
+
+@enduml
