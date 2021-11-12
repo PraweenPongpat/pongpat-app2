@@ -9,6 +9,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -18,6 +21,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,6 +57,7 @@ public class MainWindowController {
     private FileChooser fileChooser = new FileChooser();
     private File file;
     private FilesInputOutput filesInputOutput = new FilesInputOutput();
+    private ListSorter listSorter = new ListSorter();
 
 
     @FXML
@@ -74,9 +79,10 @@ public class MainWindowController {
 
             //  call method removeOneItem in ListWrapper class to remove that index from the list
             //      the function should take in a (List, index)
-            listWrapper.removeOneItem(listWrapper.getListOfItem(),index);
+            listWrapper.removeOneItem(index);
             //  remove the index from observableList also, to update the tableView
             observableList.remove(index);
+            tableView.setItems(observableList);
         }
     }
 
@@ -86,7 +92,7 @@ public class MainWindowController {
 
         //set value 'isAdding' in listWrapper to 'true', since we are adding
         //isAdding will determine the setup in the scene whether it's being added or edited
-        listWrapper.setAdding(false);
+        listWrapper.setAdding(true);
 
         //change scene to AddEditWindow.fxml process by calling changeScene method
         changeScene();
@@ -112,7 +118,7 @@ public class MainWindowController {
             //  set value 'isAdding' in listWrapper to 'false', since we are editing
             listWrapper.setAdding(false);
             //  change scene to AddEditWindow.fxml process by calling changeScene method
-            changeScene();
+                changeScene();
         }
     }
 
@@ -124,6 +130,7 @@ public class MainWindowController {
         listWrapper.getListOfItem().clear();
         //clear all data in the observableList to update tableView
         observableList.clear();
+        tableView.setItems(observableList);
     }
 
     @FXML
@@ -219,15 +226,21 @@ public class MainWindowController {
     void searchNameButtonPushed() {
         //when searchName button is pushed, no need to check in the tableView
 
+        //we are only focus on finding one aspect at a time, either name or serial number
+        //we will set the text of the other textField to emptyString
+        searchNumberTextField.setText("");
+
         //read the string from searchNameTextField
         String nameInput = searchNameTextField.getText();
 
         //call method searchName in ListWrapper class, passing in actual list as (list, string)
         //where the string is what's read from the textField
-        int indexResult = listWrapper.searchName(listWrapper.getListOfItem(),nameInput);
+        //
+        List<Integer> sameNameList = listWrapper.searchName(nameInput);
+
         //check the return value
-        //if method return -1, means search result is not found
-        if(indexResult < 0) {
+        //if method return empty list means it's not found
+        if(sameNameList.isEmpty()) {
             //  set errorDisplayLabel to prompt user "Sorry! we don't have any item with that name in stock!"
             errorDisplayLabel.setText("Sorry! we don't have any item with that name in stock!");
         }
@@ -238,14 +251,17 @@ public class MainWindowController {
 
             //create a tempList, add the item in actual list from that index to it
             List<ItemObject> tempList = new ArrayList<>();
-            tempList.add(new ItemObject(listWrapper.getListOfItem().get(indexResult).getSerialNumber(),
-                    listWrapper.getListOfItem().get(indexResult).getName(),
-                    listWrapper.getListOfItem().get(indexResult).getPrice()));
+            for(int i = 0; i< sameNameList.size(); i++) {
+                tempList.add(listWrapper.getListOfItem().get(sameNameList.get(i)));
+            }
             //clear observableList, this will clear the tableView
             observableList.clear();
             //assigned the observableList with values within tempList (should have only one item to it) to set the tableView
             observableList = FXCollections.observableArrayList(tempList);
             tableView.setItems(observableList);
+
+            //since the search is found, reset the textField to empty string
+            searchNameTextField.setText("");
         }
     }
 
@@ -253,13 +269,17 @@ public class MainWindowController {
     void searchNumberButtonPushed() {
         //when searchNumber button is pushed, no need to check in the tableView
 
+        //we are only focus on finding one aspect at a time, either name or serial number
+        //we will set the text of the other textField to emptyString
+        searchNameTextField.setText("");
+
         //read the string from searchNumberTextField
         String numberInput = searchNumberTextField.getText();
 
         //check if the format that user entered matches the given format
         //call serialNumberValidator in the AddEditWindowController class
         //pass in the String read from the textField
-        if(!(addEditWindowController.serialNumberValidator(listWrapper.getListOfItem(),numberInput))) {
+        if(!(addEditWindowController.serialNumberValidator(numberInput))) {
             //if string is invalid (return value is false)
             //  set the errorDisplayLabel to prompt user as "you have entered invalid format serialNumber"
             errorDisplayLabel.setText("you have entered invalid format serialNumber");
@@ -269,7 +289,7 @@ public class MainWindowController {
 
         //call method searchNumber in ListWrapper class, passing in actual list as (list, string)
         //where the string is what's read from the textField
-        int indexResult = listWrapper.searchNumber(listWrapper.getListOfItem(),numberInput);
+        int indexResult = listWrapper.searchNumber(numberInput);
         //check the return value
         //if method return -1, means search result is not found
         if(indexResult < 0) {
@@ -291,6 +311,9 @@ public class MainWindowController {
             //assigned the observableList with values within tempList (should have only one item to it) to set the tableView
             observableList = FXCollections.observableArrayList(tempList);
             tableView.setItems(observableList);
+
+            //since the search is found, reset the textField to empty string
+            searchNumberTextField.setText("");
         }
     }
 
@@ -298,54 +321,100 @@ public class MainWindowController {
     void sortByNameButtonPushed() {
         //call a sortListByName method from ListSorter class pass in actual list
         //the returned list will be a sorted version of actual list
+        listSorter.sortListByName(listWrapper.getListOfItem());
         //clear observableList (to clear tableView)
         //assigned the observableList with values within the list to set the tableView
+        observableList = FXCollections.observableArrayList(listWrapper.getListOfItem());
+        tableView.setItems(observableList);
     }
 
     @FXML
     void sortByNumberButtonPushed() {
         //call a sortListByNumber method from ListSorter class pass in actual list
         //the returned list will be a sorted version of actual list
+        listSorter.sortListByNumber(listWrapper.getListOfItem());
         //clear observableList (to clear tableView)
         //assigned the observableList with values within the list to set the tableView
+        observableList = FXCollections.observableArrayList(listWrapper.getListOfItem());
+        tableView.setItems(observableList);
     }
 
     @FXML
     void sortByPriceButtonPushed() {
         //call a sortListByPrice method from ListSorter class pass in actual list
         //the returned list will be a sorted version of actual list
+        listSorter.sortListByPrice(listWrapper.getListOfItem());
         //clear observableList (to clear tableView)
         //assigned the observableList with values within the list to set the tableView
+        observableList = FXCollections.observableArrayList(listWrapper.getListOfItem());
+        tableView.setItems(observableList);
+    }
+
+    @FXML
+    void showAllItemButtonPushed(ActionEvent event) {
+        //when show all button is pushed, we are refreshing the tableView to show all its item
+        observableList.clear();
+        observableList = FXCollections.observableArrayList(listWrapper.getListOfItem());
+        tableView.setItems(observableList);
+
     }
 
     public void initializeListWrapper(ListWrapper listWrapper) {
         //this method is a receiver side from data passing process between scenes
 
         //set listWrapper instance variable to the one passed from another class (to initialize it)
-
+        this.listWrapper = listWrapper;
         //set the observableList to the list within listWrapper
+        observableList = FXCollections.observableArrayList(listWrapper.getListOfItem());
         //set the tableView
+        tableView.setItems(observableList);
     }
 
-    private void changeScene() {
+    private void changeScene(){
         //this method is a sender side from data passing process between scenes
 
         //this method will always be call to pre-load information before the actual scene changing and change scene
         //since the app only have 2 scenes, this method will only be pointing to AddEditWindow.fxml
 
         //create a FXMLLoader pointing at AddEditWindow.fxml
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("AddEditWindow.fxml"));
+        Parent root = null;
         //load the loader
+        try {
+            root = loader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("something is wrong, parent is null.");
+        }
         //create the controller from AddEditWindowController class
-
+        AddEditWindowController controller = loader.getController();
         //call initializeListWrapper in addEditWindow's controller
         //  the method will receive the information where it must be done after we loaded the controller
         //  if not, the information passed to that controller will not be successful
+        controller.initializeListWrapper(listWrapper);
 
         //create a stage with this stage information from one of the controller we used in this scene
+        assert root != null;
+        Scene mainWindowScene = new Scene(root);
         //set the scene and show it (now the scene will be moved)
+        Stage window = (Stage) errorDisplayLabel.getScene().getWindow();
+        window.setScene(mainWindowScene);
+        window.show();
     }
 
     public void initialize() {
+        //todo delete this
+        listWrapper.addItemToList("a-111-111-111","aa","111.00");
+        listWrapper.addItemToList("b-222-222-222","bb","222.22");
+        listWrapper.addItemToList("a-100-000-000","aa","111.11");
+        listWrapper.addItemToList("a-100-000-001","aa","222.25");
+        listWrapper.addItemToList("a-100-000-002","aa","333.33");
+        listWrapper.addItemToList("b-100-000-000","bb","1.00");
+        listWrapper.addItemToList("b-100-000-001","bb","15.00");
+        listWrapper.addItemToList("b-100-000-002","bb","88.29");
+
+
+
         //set errorDisplayMessage to emptyString
         errorDisplayLabel.setText("");
 
