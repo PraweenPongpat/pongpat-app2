@@ -42,6 +42,6 @@ public class ListSorter {
         //use .sort, not to the list directly, but to a comparator that will grab only a price from the list
         //this will sort the list from using the 'price' element in each ItemObject
         //either store a result in a new list and return it, or just return that sorted list
-        originalList.sort(Comparator.comparing(ItemObject::getPrice));
+        originalList.sort(Comparator.comparing(ItemObject::getPriceDouble));
     }
 }

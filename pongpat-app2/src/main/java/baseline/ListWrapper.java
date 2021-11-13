@@ -47,11 +47,11 @@ public class ListWrapper {
     }
 
     //this method is used to add data into the block
-    public void addItemToList( String numberInput, String nameInput, String priceInput) {
+    public void addItemToList(String numberInput, String nameInput, String priceInput) {
         //before reaching this point, all validation already existed, we can just add it
         //create a new ItemObject parameterized with the strings given
         //add that ItemObject to the list
-        listOfItem.add(new ItemObject(numberInput,nameInput,priceInput));
+        listOfItem.add(new ItemObject(numberInput,nameInput,Double.parseDouble(priceInput)));
     }
 
     //this method is used to add data into the block
@@ -64,7 +64,7 @@ public class ListWrapper {
         //set the name of that index to nameInput
         listOfItem.get(index).setName(nameInput);
         //set the price of that index to princeInput
-        listOfItem.get(index).setPrice(priceInput);
+        listOfItem.get(index).setPrice(Double.parseDouble(priceInput));
     }
 
     //this method will be called to search the name from all item in the list, it will return index found or -1

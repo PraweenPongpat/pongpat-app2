@@ -31,6 +31,9 @@
                 <TableColumn fx:id="itemNameColumn" minWidth="0.0" prefWidth="222.39996337890625" text="Item Name" />
                   <TableColumn fx:id="itemPriceColumn" prefWidth="104.80007934570312" text="Price ($)" />
               </columns>
+               <HBox.margin>
+                  <Insets left="10.0" />
+               </HBox.margin>
             </TableView>
             <VBox alignment="CENTER" prefHeight="388.0" prefWidth="134.0" spacing="10.0">
                <children>

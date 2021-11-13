@@ -9,10 +9,10 @@ public class ItemObject {
     //this class is a placeholder for storing an item as object
     private String serialNumber;
     private String name;
-    private String price;
+    private double price;
 
     //parameterized constructor
-    public ItemObject(String serialNumber, String name, String price) {
+    public ItemObject(String serialNumber, String name, double price) {
         this.serialNumber = serialNumber;
         this.name = name;
         this.price = price;
@@ -25,7 +25,7 @@ public class ItemObject {
     public void setName(String name) {
         this.name = name;
     }
-    public void setPrice(String price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
@@ -37,6 +37,9 @@ public class ItemObject {
         return name;
     }
     public String getPrice() {
+        return String.format("%.2f",price);
+    }
+    public double getPriceDouble() {
         return price;
     }
 }

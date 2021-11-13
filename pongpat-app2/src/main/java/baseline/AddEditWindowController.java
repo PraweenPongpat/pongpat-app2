@@ -80,24 +80,6 @@ public class AddEditWindowController {
             //  end the method, do nothing else
             return;
         }
-        //the price is valid, we are now force formatting it to 2 decimal points
-        StringBuilder temp = new StringBuilder(priceInput);
-        String[] tempPriceFormat = priceInput.split("\\.");
-        //the case that user only input integer
-        if(!priceInput.contains(".")){
-            temp.append(".00");
-        }
-        //the case that user input integer with '.' but no numbers
-        else if(priceInput.contains(".") && (tempPriceFormat.length==1)){
-            temp.append("00");
-        }
-        //otherwise, fill up 0's to 2 decimal places
-        else {
-            while(tempPriceFormat[1].length()<2){
-                temp.append("0");
-            }
-        }
-        priceInput = temp.toString();
 
         //***reaching this point, means all information is valid
         //next, check if item already exists

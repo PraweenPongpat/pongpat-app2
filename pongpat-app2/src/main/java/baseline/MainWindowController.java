@@ -152,15 +152,15 @@ public class MainWindowController {
             errorDisplayLabel.setText("");
 
             //check if the string (path name) in that file has what extension and calls FilesInputOutput method accordingly
-            if (file.toString().equals(".txt")) {
+            if (file.toString().contains(".txt")) {
                 //for .txt, call saveListAsTSV in FilesInputOutput class
                 filesInputOutput.saveListAsTSV(file,listWrapper.getListOfItem());
-            } else if (file.toString().equals(".json")) {
+            } else if (file.toString().contains(".json")) {
                 //for .html, call saveListAsHTML in FilesInputOutput class
-                filesInputOutput.saveListAsHTML(file,listWrapper.getListOfItem());
-            } else if (file.toString().equals(".html")) {
+                filesInputOutput.saveListAsJSON(file,listWrapper);
+            } else if (file.toString().contains(".html")) {
                 //for .json, call saveListAsJSON in FilesInputOutput class
-                filesInputOutput.saveListAsJSON(file,listWrapper.getListOfItem());
+                filesInputOutput.saveListAsHTML(file,listWrapper.getListOfItem());
             }
         }
     }
@@ -190,29 +190,28 @@ public class MainWindowController {
 
             List<ItemObject> tempList = new ArrayList<>();
             //check if the string (path name) in that file has what extension and calls FilesInputOutput method accordingly
-            if (file.toString().equals(".txt")) {
+            if (file.toString().contains(".txt")) {
                 //for .txt, call loadFromTSV in FilesInputOutput class
-                tempList = filesInputOutput.loadFromTSV(file,listWrapper.getListOfItem());
-            } else if (file.toString().equals(".html")) {
+                tempList = filesInputOutput.loadFromTSV(file);
+            } else if (file.toString().contains(".html")) {
                 //for .html, call loadFromHTML in FilesInputOutput class
-                tempList = filesInputOutput.loadFromHTML(file,listWrapper.getListOfItem());
-            } else if (file.toString().equals(".json")) {
+                tempList = filesInputOutput.loadFromHTML(file);
+            } else if (file.toString().contains(".json")) {
                 //for .json, call loadFromJSON in FilesInputOutput class
-                tempList = filesInputOutput.loadFromJSON(file,listWrapper.getListOfItem());
+                tempList = filesInputOutput.loadFromJSON(file);
             }
 
             //check the size of the list that is returned from the function
-            if (tempList.isEmpty()) {
+            if ((tempList == null) || tempList.isEmpty()) {
                 errorDisplayLabel.setText("the file is empty, or contaminated: file cannot be opened");
             } else {
                 //ensure to set errorDisplayLabel to empty string
                 errorDisplayLabel.setText("");
 
                 //copy each element of that list
-                for(int i = 0; i< tempList.size(); i++ ) {
+                for (int i = 0; i < tempList.size(); i++) {
                     listWrapper.getListOfItem().add(tempList.get(i));
                 }
-
                 //set the observableList to the list
                 observableList = FXCollections.observableArrayList(listWrapper.getListOfItem());
                 //this is the update the tableView to the loaded list
@@ -305,7 +304,7 @@ public class MainWindowController {
             List<ItemObject> tempList = new ArrayList<>();
             tempList.add(new ItemObject(listWrapper.getListOfItem().get(indexResult).getSerialNumber(),
                     listWrapper.getListOfItem().get(indexResult).getName(),
-                    listWrapper.getListOfItem().get(indexResult).getPrice()));
+                    Double.parseDouble(listWrapper.getListOfItem().get(indexResult).getPrice())));
             //clear observableList, this will clear the tableView
             observableList.clear();
             //assigned the observableList with values within tempList (should have only one item to it) to set the tableView
