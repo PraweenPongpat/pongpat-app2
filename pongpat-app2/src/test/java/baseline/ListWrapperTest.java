@@ -17,14 +17,14 @@ class ListWrapperTest {
         String tempPrice;
         //add the first 1000 items
         for(int i = 0; i<999;i++) {
-            tempNumber = String.format("%s%03d","a-000-000",i);
+            tempNumber = String.format("%s%03d","a-000-000-",i);
             tempName = "testItemName#"+i;
             tempPrice = Double.toString(i+0.01);
             listWrapper.addItemToList(tempNumber,tempName,tempPrice);
         }
         //add another 50 items
         for(int i = 0; i<50;i++) {
-            tempNumber = String.format("%s%03d","b-000-000",i);
+            tempNumber = String.format("%s%03d","b-000-000-",i);
             tempName = "testItemName#"+(i+1000);
             tempPrice = Double.toString(i+0.01+1000);
             listWrapper.addItemToList(tempNumber,tempName,tempPrice);

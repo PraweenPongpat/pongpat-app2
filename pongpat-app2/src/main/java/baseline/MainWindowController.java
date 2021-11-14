@@ -18,6 +18,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import jfxtras.styles.jmetro.JMetro;
+import jfxtras.styles.jmetro.Style;
 
 import java.io.File;
 import java.io.IOException;
@@ -398,6 +400,11 @@ public class MainWindowController {
         //create a stage with this stage information from one of the controller we used in this scene
         assert root != null;
         Scene mainWindowScene = new Scene(root);
+
+        //set the theme from J-metro
+        JMetro jMetro = new JMetro(Style.LIGHT);
+        jMetro.setScene(mainWindowScene);
+
         //set the scene and show it (now the scene will be moved)
         Stage window = (Stage) errorDisplayLabel.getScene().getWindow();
         window.setScene(mainWindowScene);

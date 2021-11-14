@@ -12,6 +12,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import jfxtras.styles.jmetro.JMetro;
+import jfxtras.styles.jmetro.Style;
 
 import java.io.IOException;
 import java.util.List;
@@ -164,6 +166,11 @@ public class AddEditWindowController {
         //create a stage with this stage information from one of the controller we used in this scene
         assert root != null;
         Scene mainWindowScene = new Scene(root);
+
+        //set the theme from J-metro
+        JMetro jMetro = new JMetro(Style.LIGHT);
+        jMetro.setScene(mainWindowScene);
+
         //set the scene and show it (now the scene will be moved)
         Stage window = (Stage) errorDisplayLabel.getScene().getWindow();
         window.setScene(mainWindowScene);
