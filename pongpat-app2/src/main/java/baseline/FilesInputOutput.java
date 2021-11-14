@@ -6,6 +6,10 @@
 package baseline;
 
 import com.google.gson.Gson;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -16,6 +20,8 @@ import java.util.Collections;
 import java.util.Formatter;
 import java.util.List;
 import java.util.Scanner;
+
+import static j2html.TagCreator.*;
 
 public class FilesInputOutput {
     //this class is used to deal with saving, loading process from different types of files
@@ -77,7 +83,35 @@ public class FilesInputOutput {
 
     //after already checked that the file is extension of .html, and we are trying to save it
     public void saveListAsHTML(File file, List<ItemObject> list){
-        //I need to figure this out....later
+        //using J2HTML,to create a html format
+        //make a String that contains everything in it
+        String html = html(head(
+                title("InventoryApplication")),     //declaring the title
+                body(
+                        table(
+                        th("Serial Number"),            //set table headers
+                        th("Name"),
+                        th("Value"),
+                        tbody(
+                                each(list, i -> tr(         //loop through the body to display each values
+                                        td(i.getSerialNumber()),
+                                        td(i.getName()),
+                                        td(i.getPrice())
+                                ))
+                        )
+                ))
+        ).renderFormatted();                //renderFormatted gives an indented html format (when open the .html file)
+        try {
+            //create a writer linked to that file
+            writer = new Formatter(file);
+            //output to file, from the string we made above with j2html
+            writer.format("%s%n%s","<!DOCTYPE html>",html);
+            //close writer
+            writer.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            System.out.println("save HTML failed");
+        }
     }
 
     //after already checked that the file is extension of .txt, and we are trying to load it
@@ -85,8 +119,7 @@ public class FilesInputOutput {
         //loading will reflect from saving process
         List<ItemObject> result = new ArrayList<>();
         //set Scanner to the file location given
-        try {
-            Scanner scanner = new Scanner(file);
+        try (Scanner scanner = new Scanner(file)) {
             //read each line at a time
             //skip the first line, since we already know what those are
             scanner.nextLine();
@@ -100,17 +133,16 @@ public class FilesInputOutput {
                 //  set string[0] to the serialNumber string
                 //  set string[1] to the name string
                 //  set string[2] to the price string after parsed out the "$"
-                StringBuilder tempSB = new StringBuilder();
-                tempSB.append(tempArr[2]);
-                //trim out the "$", which is always at index 0
-                tempSB.deleteCharAt(0);
+                //      trim out the "$" by replacing "$" with empty string
+                String trimmed = tempArr[2].replace("$", "");
                 //  create a new ItemObject using those elements
                 //  add the ItemObject to the list
-                result.add(new ItemObject(tempArr[0],tempArr[1],Double.parseDouble(tempSB.toString())));
+                result.add(new ItemObject(tempArr[0], tempArr[1], Double.parseDouble(trimmed)));
             }
             return result;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+            System.out.println("something is wrong with saving TSV");
         }
         return Collections.emptyList();
     }
@@ -126,13 +158,43 @@ public class FilesInputOutput {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return listWrapper.getListOfItem();
     }
 
     //after already checked that the file is extension of .html, and we are trying to load it
     public List<ItemObject> loadFromHTML(File file){
-        //I need to figure this out....later
-        return null;
+        //create a list to store result
+        List<ItemObject> list = new ArrayList<>();
+        //temp variables to read from parsing
+        String number;
+        String name;
+        double price;
+        try {
+            //parse to Document class with Jsoup
+            Document document = Jsoup.parse(file,null);
+            //set the focus only to table
+            Elements tableElement = document.select("table");
+            //set elements to tableRow
+            Elements tableRowElements = tableElement.select(":not(th) tr");
+            //loop through the table
+            for (int i = 1; i < tableRowElements.size(); i++) {
+                Element row = tableRowElements.get(i);
+                Elements rowItems = row.select("td");
+                //index 0 is item's serial number
+                number = rowItems.get(0).text();
+                //index 1 is item's name
+                name = rowItems.get(1).text();
+                //index 2 is item's price
+                price = Double.parseDouble(rowItems.get(2).text());
+                //create a new ItemObject with the information, add to the list
+                list.add(new ItemObject(number,name,price));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("something is wrong with HTML savings... cannot save it");
+            return Collections.emptyList();
+        }
+        //return the list
+        return list;
     }
 }
