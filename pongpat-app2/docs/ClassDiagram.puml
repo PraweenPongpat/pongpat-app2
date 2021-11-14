@@ -19,6 +19,7 @@ class MainWindowController {
     - FileChooser fileChooser
     - File file
     - FilesInputOutput filesInputOutput
+    - ListSorter listSorter
 
     + @FXML removeOneItemButtonPushed ()
     + @FXML addItemButtonPushed ()
@@ -31,6 +32,7 @@ class MainWindowController {
     + @FXML sortByNameButtonPushed ()
     + @FXML sortByNumberButtonPushed ()
     + @FXML sortByPriceButtonPushed ()
+    + @FXML showAllItemButtonPushed ()
     + initializeListWrapper (ListWrapper)
     - changeScene ()
     + initialize ()
@@ -43,52 +45,50 @@ class AddEditWindowController {
     - @FXML TextField itemPriceTextField
     - @FXML Label topicLabel
     - ListWrapper listWrapper
-    + int index
+    - int index
 
     + @FXML cancelButtonPushed ()
     + @FXML doneButtonPushed ()
     + initializeListWrapper (ListWrapper)
     - changeScene ()
-    + initialize ()
     + boolean serialNumberValidator (List<ItemObject>, String)
     + boolean nameLengthValidator (List<ItemObject>, String)
     + boolean priceValidator (List<ItemObject>, String)
     + boolean isNumberAlreadyExisted (List<ItemObject>, String, int, boolean)
-    + addItemToList (List<ItemObject>, String, String, String)
-    + void editItemToList (List<ItemObject>, String, String, String,int)
+    - checkExisted(List<ItemObject>, String)
 }
 
 class FilesInputOutput {
     - Formatter writer
-    - Scanner scanner
 
     + saveListAsTSV (File, List<ItemObject>)
-    + saveListAsJSON (File, List<ItemObject>)
+    + saveListAsJSON (File, ListWrapper)
     + saveListAsHTML (File, List<ItemObject>)
-    + loadFromTSV (File, List<ItemObject>)
-    + loadFromJSON (File, List<ItemObject>)
-    + loadFromHTML (File, List<ItemObject>)
+    + List<ItemObject> loadFromTSV (File)
+    + List<ItemObject> loadFromJSON (File)
+    + List<ItemObject> loadFromHTML (File)
 }
 
 class ItemObject {
     - String serialNumber
     - String name
-    - String price
+    - double price
 
-    + ItemObject (String,String,String)
+    + ItemObject (String,String,double)
     + setSerialNumber (String)
     + setName (String)
-    + setPrice (String)
+    + setPrice (double)
 
     + String getSerialNumber()
     + String getName()
     + String getPrice()
+    + double getPriceDouble()
 }
 
 class ListSorter {
-    + List<ItemObject> sortListByName (List<ItemObject>)
-    + List<ItemObject> sortListByNumber(List<ItemObject>)
-    + List<ItemObject> sortListByPrice(List<ItemObject>)
+    + sortListByName (List<ItemObject>)
+    + sortListByNumber(List<ItemObject>)
+    + sortListByPrice(List<ItemObject>)
 }
 
 class ListWrapper {
@@ -100,19 +100,21 @@ class ListWrapper {
     + setAdding (boolean)
     + int getIndex ()
     + List<ItemObject> getListOfItem ()
-    + boolean isAdding ()
-    + removeOneItem (List<ItemObject>, int)
-    + int searchName(List<ItemObject>, String)
-    + int searchNumber(List<ItemObject>, String)
+    + boolean getIsAdding ()
+    + removeOneItem (int)
+    + removeAllItem(List<ItemObject>)
+    + addItemToList(String, String, String)
+    + editItemToList(String, String, String, int)
+    + List<Integer> searchName(String)
+    + int searchNumber(String)
 }
 
 InventoryManagementApplication -- MainWindowController
 MainWindowController -- AddEditWindowController
 MainWindowController -- ListWrapper
-MainWindowController -- ItemObject
 MainWindowController -- ListSorter
 MainWindowController -- FilesInputOutput
 AddEditWindowController -- ListWrapper
-AddEditWindowController -- ItemObject
+ListWrapper -- ItemObject
 
 @enduml
