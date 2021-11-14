@@ -1,0 +1,4 @@
+Serial Number	Name	Value
+A-AAA-AAA-AAA	name0	$111.11
+B-BBB-BBB-BBB	name1	$222.22
+C-CCC-CCC-CCC	name2	$333.33

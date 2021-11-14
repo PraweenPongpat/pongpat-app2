@@ -12,7 +12,7 @@ public class ListWrapper {
     //wrapper object storing a list of ItemObject and other variables/method as needed
 
     //list of ItemObject
-    private List<ItemObject> listOfItem = new ArrayList<>();
+    private final List<ItemObject> listOfItem = new ArrayList<>();
     //isAdding to check if the process is whether add/edit to check on AddEditWindowController
     //isAdding = true when adding, isAdding = false when editing
     private boolean isAdding;
@@ -44,6 +44,11 @@ public class ListWrapper {
         //access the list with the given index
         //remove that index from the list
         listOfItem.remove(index);
+    }
+
+    //this method will be called to remove all item from the list
+    public void removeAllItem (List<ItemObject> list){
+        list.clear();
     }
 
     //this method is used to add data into the block

@@ -40,10 +40,10 @@ public class FilesInputOutput {
             //serNumItem2   <tab> nameItem2 <tab> priceItem2 ...
             //**************************************************************
             writer.format("%s\t%s\t%s%n","Serial Number","Name","Value");
-            for(int i = 0; i<list.size();i++) {
-                writer.format("%s\t%s\t%s%s%n",list.get(i).getSerialNumber(),
-                        list.get(i).getName(),"$",
-                        String.format("%.2f",Double.parseDouble(list.get(i).getPrice()))
+            for (ItemObject itemObject : list) {
+                writer.format("%s\t%s\t%s%s%n", itemObject.getSerialNumber(),
+                        itemObject.getName(), "$",
+                        String.format("%.2f", Double.parseDouble(itemObject.getPrice()))
                 );
             }
             //close writer
@@ -59,22 +59,23 @@ public class FilesInputOutput {
     public void saveListAsJSON(File file, ListWrapper listWrapper){
         //set 'writer' to the file
         Gson gson = new Gson();
-        //format of saving of JSON file will be (but all in one line)
-        //**************************************************************
-        // {
-        //    "list" : [
-        //        {"serialNumber": "serNumItem1", "name": "nameItem1", "price": "priceItem1"},
-        //        {"serialNumber": "serNumItem2", "name": "nameItem2", "price": "priceItem2"},
-        //          ...
-        //        {"serialNumber": "serNumItemX", "name": "nameItemX", "price": "priceItemX"}
-        //    ]
-        // }
-        //**************************************************************
+        /*
+        format of saving of JSON file will be (but all in one line)
+        **************************************************************
+         {
+            "list" : [
+                {"serialNumber": "serNumItem1", "name": "nameItem1", "price": "priceItem1"},
+                {"serialNumber": "serNumItem2", "name": "nameItem2", "price": "priceItem2"},
+                  ...
+                {"serialNumber": "serNumItemX", "name": "nameItemX", "price": "priceItemX"}
+            ]
+         }
+        **************************************************************
+        */
         try {
             writer = new Formatter(file);
             gson.toJson(listWrapper, writer.out());
             writer.close();
-            System.out.println("file saved");
         } catch (IOException e){
             System.out.println("json file saving is not right");
         }
@@ -153,7 +154,7 @@ public class FilesInputOutput {
         //the way to read that back, I will use fromJson, which will automatically parse the file to the object
         ListWrapper listWrapper = new ListWrapper();
         Gson gson = new Gson();
-        try (FileReader scanner = new FileReader(file);){
+        try (FileReader scanner = new FileReader(file)){
             listWrapper = gson.fromJson(scanner,listWrapper.getClass());
         } catch (IOException e) {
             e.printStackTrace();

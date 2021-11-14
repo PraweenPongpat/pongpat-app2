@@ -5,7 +5,6 @@
 
 package baseline;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -32,10 +31,10 @@ public class AddEditWindowController {
 
     //variables as needed
     private ListWrapper listWrapper = new ListWrapper();
-    public int index = -1;
+    private int index = -1;
 
     @FXML
-    void cancelButtonPushed(ActionEvent event) {
+    void cancelButtonPushed() {
         //when cancel button is pushed,
         //simply call changeScene to change the scene back
         //since there is no new information to be passed
@@ -43,7 +42,7 @@ public class AddEditWindowController {
     }
 
     @FXML
-    void doneButtonPushed(ActionEvent event) {
+    void doneButtonPushed() {
         //when done button is pushed
         //we need to verify information that user filled first
 
@@ -227,14 +226,11 @@ public class AddEditWindowController {
         //check if the parsed number's decimal points
         String[] decimalPointsCheck = Double.toString(tempPrice).split("\\.");
         //if it has strictly longer than 2 decimal points
-        if(decimalPointsCheck[1].length()>2) {
-            //return false
-            return false;
-        }
+        //return false
+        return decimalPointsCheck[1].length() <= 2;
         //if it has less than or equal to that, it's okay
 
         //reaching this point, means the validation has passed
-        return true;
     }
 
     //this method is used to check if the serial number already existed in the list
@@ -254,8 +250,8 @@ public class AddEditWindowController {
     }
     //a helper method to check isNumberAlreadyExisted
     private boolean checkExisted(List<ItemObject> list, String numberInput) {
-        for(int i = 0; i< list.size();i++){
-            if(list.get(i).getSerialNumber().equals(numberInput))
+        for (ItemObject itemObject : list) {
+            if (itemObject.getSerialNumber().equals(numberInput))
                 return true;
         }
         return false;

@@ -7,7 +7,6 @@ package baseline;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -49,15 +48,15 @@ public class MainWindowController {
     //observableList uses to display items to tableView
     private ObservableList<ItemObject> observableList;
     //AddEditWindowController class's methods will be needed uses to pass information between scenes
-    private AddEditWindowController addEditWindowController = new AddEditWindowController();
+    private final AddEditWindowController addEditWindowController = new AddEditWindowController();
     //index to keep up with the index chosen in the tableView
     private int index = -1;  //always default -1, meaning that nothing is selected in the tableView yet
 
     //other parameters... like
-    private FileChooser fileChooser = new FileChooser();
+    private final FileChooser fileChooser = new FileChooser();
     private File file;
-    private FilesInputOutput filesInputOutput = new FilesInputOutput();
-    private ListSorter listSorter = new ListSorter();
+    private final FilesInputOutput filesInputOutput = new FilesInputOutput();
+    private final ListSorter listSorter = new ListSorter();
 
 
     @FXML
@@ -127,7 +126,7 @@ public class MainWindowController {
         //when removeAllItem button is pushed, no need to check in the tableView
 
         //call method removeAllItem in ListWrapper class, passed in the list from listWrapper
-        listWrapper.getListOfItem().clear();
+        listWrapper.removeAllItem(listWrapper.getListOfItem());
         //clear all data in the observableList to update tableView
         observableList.clear();
         tableView.setItems(observableList);
@@ -155,11 +154,13 @@ public class MainWindowController {
             if (file.toString().contains(".txt")) {
                 //for .txt, call saveListAsTSV in FilesInputOutput class
                 filesInputOutput.saveListAsTSV(file,listWrapper.getListOfItem());
-            } else if (file.toString().contains(".json")) {
-                //for .html, call saveListAsHTML in FilesInputOutput class
-                filesInputOutput.saveListAsJSON(file,listWrapper);
-            } else if (file.toString().contains(".html")) {
+            }
+            else if (file.toString().contains(".json")) {
                 //for .json, call saveListAsJSON in FilesInputOutput class
+                filesInputOutput.saveListAsJSON(file,listWrapper);
+            }
+            else if (file.toString().contains(".html")) {
+                //for .html, call saveListAsHTML in FilesInputOutput class
                 filesInputOutput.saveListAsHTML(file,listWrapper.getListOfItem());
             }
         }
@@ -193,10 +194,12 @@ public class MainWindowController {
             if (file.toString().contains(".txt")) {
                 //for .txt, call loadFromTSV in FilesInputOutput class
                 tempList = filesInputOutput.loadFromTSV(file);
-            } else if (file.toString().contains(".html")) {
+            }
+            else if (file.toString().contains(".html")) {
                 //for .html, call loadFromHTML in FilesInputOutput class
                 tempList = filesInputOutput.loadFromHTML(file);
-            } else if (file.toString().contains(".json")) {
+            }
+            else if (file.toString().contains(".json")) {
                 //for .json, call loadFromJSON in FilesInputOutput class
                 tempList = filesInputOutput.loadFromJSON(file);
             }
@@ -209,8 +212,8 @@ public class MainWindowController {
                 errorDisplayLabel.setText("");
 
                 //copy each element of that list
-                for (int i = 0; i < tempList.size(); i++) {
-                    listWrapper.getListOfItem().add(tempList.get(i));
+                for (ItemObject itemObject : tempList) {
+                    listWrapper.getListOfItem().add(itemObject);
                 }
                 //set the observableList to the list
                 observableList = FXCollections.observableArrayList(listWrapper.getListOfItem());
@@ -250,8 +253,8 @@ public class MainWindowController {
 
             //create a tempList, add the item in actual list from that index to it
             List<ItemObject> tempList = new ArrayList<>();
-            for(int i = 0; i< sameNameList.size(); i++) {
-                tempList.add(listWrapper.getListOfItem().get(sameNameList.get(i)));
+            for (Integer integer : sameNameList) {
+                tempList.add(listWrapper.getListOfItem().get(integer));
             }
             //clear observableList, this will clear the tableView
             observableList.clear();
@@ -350,7 +353,7 @@ public class MainWindowController {
     }
 
     @FXML
-    void showAllItemButtonPushed(ActionEvent event) {
+    void showAllItemButtonPushed() {
         //when show all button is pushed, we are refreshing the tableView to show all its item
         observableList.clear();
         observableList = FXCollections.observableArrayList(listWrapper.getListOfItem());
@@ -402,18 +405,6 @@ public class MainWindowController {
     }
 
     public void initialize() {
-        //todo delete this
-        listWrapper.addItemToList("a-111-111-111","aa","111.00");
-        listWrapper.addItemToList("b-222-222-222","bb","222.22");
-        listWrapper.addItemToList("a-100-000-000","aa","111.11");
-        listWrapper.addItemToList("a-100-000-001","aa","222.25");
-        listWrapper.addItemToList("a-100-000-002","aa","333.33");
-        listWrapper.addItemToList("b-100-000-000","bb","1.00");
-        listWrapper.addItemToList("b-100-000-001","bb","15.00");
-        listWrapper.addItemToList("b-100-000-002","bb","88.29");
-
-
-
         //set errorDisplayMessage to emptyString
         errorDisplayLabel.setText("");
 
