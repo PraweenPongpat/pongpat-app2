@@ -29,7 +29,7 @@
               <columns>
                 <TableColumn fx:id="itemNumberColumn" prefWidth="233.5999755859375" text="Serial Number" />
                 <TableColumn fx:id="itemNameColumn" minWidth="0.0" prefWidth="222.39996337890625" text="Item Name" />
-                  <TableColumn fx:id="itemPriceColumn" prefWidth="104.80007934570312" text="Price ($)" />
+                  <TableColumn fx:id="itemPriceColumn" prefWidth="111.0" text="Price ($)" />
               </columns>
                <HBox.margin>
                   <Insets left="10.0" />
