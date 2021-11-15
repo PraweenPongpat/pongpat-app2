@@ -154,7 +154,7 @@ public class AddEditWindowController {
         try {
             root = loader.load();
         } catch (IOException e) {
-            System.out.println("something is wrong, parent is null.");
+            e.printStackTrace();
         }
         //create the controller from MainWindowController class
         MainWindowController controller = loader.getController();

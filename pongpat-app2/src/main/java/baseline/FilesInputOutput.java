@@ -51,7 +51,6 @@ public class FilesInputOutput {
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            System.out.println("FILE CANNOT BE SAVED! something is wrong");
         }
     }
 
@@ -77,7 +76,7 @@ public class FilesInputOutput {
             gson.toJson(listWrapper, writer.out());
             writer.close();
         } catch (IOException e){
-            System.out.println("json file saving is not right");
+            e.printStackTrace();
         }
         //close writer
     }
@@ -111,7 +110,6 @@ public class FilesInputOutput {
             writer.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            System.out.println("save HTML failed");
         }
     }
 
@@ -143,7 +141,6 @@ public class FilesInputOutput {
             return result;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            System.out.println("something is wrong with saving TSV");
         }
         return Collections.emptyList();
     }
@@ -192,7 +189,6 @@ public class FilesInputOutput {
             }
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("something is wrong with HTML savings... cannot save it");
             return Collections.emptyList();
         }
         //return the list

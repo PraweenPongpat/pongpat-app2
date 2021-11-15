@@ -32,6 +32,7 @@ public class InventoryManagementApplication extends Application {
         jMetro.setScene(scene);
 
         //load and display a new scene
+        stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
     }

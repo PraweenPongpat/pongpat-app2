@@ -221,7 +221,6 @@ public class MainWindowController {
                 observableList = FXCollections.observableArrayList(listWrapper.getListOfItem());
                 //this is the update the tableView to the loaded list
                 tableView.setItems(observableList);
-                System.out.println("file is loaded successfully, and replaced the current");
             }
         }
     }
@@ -388,7 +387,6 @@ public class MainWindowController {
             root = loader.load();
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("something is wrong, parent is null.");
         }
         //create the controller from AddEditWindowController class
         AddEditWindowController controller = loader.getController();
