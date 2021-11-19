@@ -4,7 +4,7 @@ welcome to an inventory list application!
 These are the basic quesitons that you might ask...
 
 Once you run the program! you will find the main page.
-Note*
+Note
 serial number is in format: A-XXX-XXX-XXX where A must be letter, X can be either number or letter
 serial number must be unique for each item.
 name if the item must be in the length of 2-256 characters, inclusive
