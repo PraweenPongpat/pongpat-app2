@@ -7,6 +7,7 @@ package baseline;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class ListWrapper {
     //wrapper object storing a list of ItemObject and other variables/method as needed
@@ -72,14 +73,14 @@ public class ListWrapper {
         listOfItem.get(index).setPrice(Double.parseDouble(priceInput));
     }
 
-    //this method will be called to search the name from all item in the list, it will return index found or -1
+    //this method will be called to search the name from all item in the list, it will return the list of index found or empty
     public List<Integer> searchName(String nameInput) {
         //create a new List
         List<Integer> sameNameList = new ArrayList<>();
         //loop through the size of the list, each iteration...
         for(int i = 0; i< listOfItem.size(); i++) {
             // check if the 'name' store in the current index is the same as 'nameInput'
-            if(listOfItem.get(i).getName().equals(nameInput)) {
+            if((listOfItem.get(i).getName().toLowerCase(Locale.ROOT)).contains(nameInput.toLowerCase(Locale.ROOT))) {
                 // if both string is the same, add that index to the result list
                 sameNameList.add(i);
             }
@@ -89,16 +90,18 @@ public class ListWrapper {
     }
 
     //this method will be called to search the serial number from all item in the list, it will return index found or -1
-    public int searchNumber( String numberInput) {
+    public List<Integer> searchNumber(String numberInput) {
+        //create a new List
+        List<Integer> sameNumberList = new ArrayList<>();
         //loop through the size of the list, each iteration...
         for(int i = 0; i< listOfItem.size(); i++) {
-            // check if the 'serialNumber' store in the current index is the same as 'stringName'
-            if (listOfItem.get(i).getSerialNumber().equals(numberInput)) {
-                // if both string is the same, return that index
-                return i;
+            // check if the 'name' store in the current index is the same as 'nameInput'
+            if((listOfItem.get(i).getSerialNumber().toLowerCase(Locale.ROOT)).contains(numberInput.toLowerCase(Locale.ROOT))) {
+                // if both string is the same, add that index to the result list
+                sameNumberList.add(i);
             }
         }
         //if the loop ended, and not found the any matches, return -1
-        return -1;
+        return sameNumberList;
     }
 }

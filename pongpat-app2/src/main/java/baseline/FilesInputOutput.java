@@ -6,6 +6,7 @@
 package baseline;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -57,7 +58,9 @@ public class FilesInputOutput {
     //after already checked that the file is extension of .json, and we are trying to save it
     public void saveListAsJSON(File file, ListWrapper listWrapper){
         //set 'writer' to the file
-        Gson gson = new Gson();
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.setPrettyPrinting().create();
+
         /*
         format of saving of JSON file will be (but all in one line)
         **************************************************************
@@ -89,9 +92,9 @@ public class FilesInputOutput {
                 title("InventoryApplication")),     //declaring the title
                 body(
                         table(
-                        th("Serial Number"),            //set table headers
-                        th("Name"),
-                        th("Value"),
+                        th("Serial Number").withStyle("text-align: left;"),            //set table headers
+                        th("Name").withStyle("text-align: left;"),
+                        th("Value").withStyle("text-align: left;"),
                         tbody(
                                 each(list, i -> tr(         //loop through the body to display each values
                                         td(i.getSerialNumber()),
@@ -99,7 +102,8 @@ public class FilesInputOutput {
                                         td(i.getPrice())
                                 ))
                         )
-                ))
+                ).withStyle("padding : 20px;min-width : 700px;")
+                )
         ).renderFormatted();                //renderFormatted gives an indented html format (when open the .html file)
         try {
             //create a writer linked to that file

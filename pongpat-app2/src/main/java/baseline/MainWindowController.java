@@ -11,10 +11,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -238,7 +235,6 @@ public class MainWindowController {
 
         //call method searchName in ListWrapper class, passing in actual list as (list, string)
         //where the string is what's read from the textField
-        //
         List<Integer> sameNameList = listWrapper.searchName(nameInput);
 
         //check the return value
@@ -246,6 +242,7 @@ public class MainWindowController {
         if(sameNameList.isEmpty()) {
             //  set errorDisplayLabel to prompt user "Sorry! we don't have any item with that name in stock!"
             errorDisplayLabel.setText("Sorry! we don't have any item with that name in stock!");
+            observableList.clear();
         }
         //if method return non-positive, which represents the index found in the list
         else {
@@ -279,25 +276,16 @@ public class MainWindowController {
         //read the string from searchNumberTextField
         String numberInput = searchNumberTextField.getText();
 
-        //check if the format that user entered matches the given format
-        //call serialNumberValidator in the AddEditWindowController class
-        //pass in the String read from the textField
-        if(!(addEditWindowController.serialNumberValidator(numberInput))) {
-            //if string is invalid (return value is false)
-            //  set the errorDisplayLabel to prompt user as "you have entered invalid format serialNumber"
-            errorDisplayLabel.setText("you have entered invalid format serialNumber");
-            return;
-        }
-        //if string is valid (returned value is true), proceed
-
-        //call method searchNumber in ListWrapper class, passing in actual list as (list, string)
+        //call method searchName in ListWrapper class, passing in actual list as (list, string)
         //where the string is what's read from the textField
-        int indexResult = listWrapper.searchNumber(numberInput);
+        List<Integer> sameNumberList = listWrapper.searchNumber(numberInput);
+
         //check the return value
-        //if method return -1, means search result is not found
-        if(indexResult < 0) {
-            //  set errorDisplayLabel to prompt user "Sorry! we don't have any item with that serial number in stock!"
-            errorDisplayLabel.setText("Sorry! we don't have any item with that serial number in stock!");
+        //if method return empty list means it's not found
+        if (sameNumberList.isEmpty()) {
+            //  set errorDisplayLabel to prompt user "Sorry! we don't have any item with that name in stock!"
+            errorDisplayLabel.setText("Sorry! we don't have any item with that name in stock!");
+            observableList.clear();
         }
         //if method return non-positive, which represents the index found in the list
         else {
@@ -306,9 +294,9 @@ public class MainWindowController {
 
             //create a tempList, add the item in actual list from that index to it
             List<ItemObject> tempList = new ArrayList<>();
-            tempList.add(new ItemObject(listWrapper.getListOfItem().get(indexResult).getSerialNumber(),
-                    listWrapper.getListOfItem().get(indexResult).getName(),
-                    Double.parseDouble(listWrapper.getListOfItem().get(indexResult).getPrice())));
+            for (Integer integer : sameNumberList) {
+                tempList.add(listWrapper.getListOfItem().get(integer));
+            }
             //clear observableList, this will clear the tableView
             observableList.clear();
             //assigned the observableList with values within tempList (should have only one item to it) to set the tableView
@@ -437,6 +425,7 @@ public class MainWindowController {
         itemNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         //itemNameColumn is looking for 'price'
         itemPriceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
+        itemPriceColumn.setComparator((a, b) -> (Double.parseDouble(a) >= Double.parseDouble(b)) ? 1 : 0);
 
         //initialize the tableView
         tableView.setItems(observableList);

@@ -108,18 +108,29 @@ class ListWrapperTest {
         //add items to the list
         listWrapper.addItemToList("A-AAA-AAA-AAA","name0","100.05");
         listWrapper.addItemToList("B-BBB-BBB-BBB","name1","500.99");
+        listWrapper.addItemToList("B-BBB-BBB-CCC","name2","555.99");
 
-        //call a search, test the return value (if found is the index, if not found is -1)
-        //test on found number
-        int foundNumberTest0 = listWrapper.searchNumber("A-AAA-AAA-AAA");
-        assertEquals(0,foundNumberTest0);
+        //test on finding whole serial number
+        //call a search, test the return list
+        //test on found number, returned list will have all index of that number in it
+        List<Integer> foundTest1 = listWrapper.searchNumber("A-AAA-AAA-AAA");
+        //expected size of the list = 1 at index#0
+        assertEquals(1,foundTest1.size());
+        assertEquals(0,foundTest1.get(0));
 
-        int foundNumberTest1 = listWrapper.searchNumber("B-BBB-BBB-BBB");
-        assertEquals(1,foundNumberTest1);
+        //test on finding substring of serial number
+        //call a search, test the return list
+        //test on found number, returned list will have all index of that number in it
+        List<Integer> foundTest2 = listWrapper.searchNumber("BBB");
+        //expected size of the list = 2 at index#1 and index#2
+        assertEquals(2,foundTest2.size());
+        assertEquals(1,foundTest2.get(0));
+        assertEquals(2,foundTest2.get(1));
 
-        //test on not found
-        int notFoundTest = listWrapper.searchNumber("C-CCC-CCC-CCC");
-        assertEquals(-1,notFoundTest);
+        //test on un-found search
+        List<Integer> foundTest3 = listWrapper.searchNumber("ZZZ");
+        //expected empty list
+        assertTrue(foundTest3.isEmpty());
     }
 
     //test against requirement#12, search by name (name can be the same)
@@ -137,6 +148,14 @@ class ListWrapperTest {
         assertEquals(2,foundTest.size());
         assertEquals(1,foundTest.get(0));
         assertEquals(2,foundTest.get(1));
+
+        //test on finding substring of the name
+        List<Integer> foundTest1 = listWrapper.searchName("na");
+        //expected size of the list = 3, since all name has "na"
+        assertEquals(3,foundTest1.size());
+        assertEquals(0,foundTest1.get(0));
+        assertEquals(1,foundTest1.get(1));
+        assertEquals(2,foundTest1.get(2));
 
         //test on not found list, expected emptyList in return
         List<Integer> notFoundTest = listWrapper.searchName("No name");
