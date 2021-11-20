@@ -90,7 +90,8 @@ public class FilesInputOutput {
         //make a String that contains everything in it
         String alignLeft = "text-align: left;";
         String html = html(head(
-                title("InventoryApplication")),     //declaring the title
+                title("InventoryApplication"),//declaring the title
+                meta().withName("description").withContent("Praween Pongpat")),
                 body(
                         table(
                         th("Serial Number").withStyle(alignLeft),            //set table headers
