@@ -24,10 +24,10 @@ class ListSorterTest {
         listSorter.sortListByPrice(listWrapper.getListOfItem());
 
         //expected the price from 111.11, then 222.22, then 333.33, then 999.99
-        assertEquals("111.11",listWrapper.getListOfItem().get(0).getPrice());
-        assertEquals("222.22",listWrapper.getListOfItem().get(1).getPrice());
-        assertEquals("333.33",listWrapper.getListOfItem().get(2).getPrice());
-        assertEquals("999.99",listWrapper.getListOfItem().get(3).getPrice());
+        assertEquals("$111.11",listWrapper.getListOfItem().get(0).getPrice());
+        assertEquals("$222.22",listWrapper.getListOfItem().get(1).getPrice());
+        assertEquals("$333.33",listWrapper.getListOfItem().get(2).getPrice());
+        assertEquals("$999.99",listWrapper.getListOfItem().get(3).getPrice());
     }
 
     //test against requirement#9 sort by serial number

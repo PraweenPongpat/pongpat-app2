@@ -46,8 +46,6 @@ public class MainWindowController {
     private ListWrapper listWrapper = new ListWrapper();
     //observableList uses to display items to tableView
     private ObservableList<ItemObject> observableList;
-    //AddEditWindowController class's methods will be needed uses to pass information between scenes
-    private final AddEditWindowController addEditWindowController = new AddEditWindowController();
     //index to keep up with the index chosen in the tableView
     private int index = -1;  //always default -1, meaning that nothing is selected in the tableView yet
 
@@ -425,7 +423,9 @@ public class MainWindowController {
         itemNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         //itemNameColumn is looking for 'price'
         itemPriceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
-        itemPriceColumn.setComparator((a, b) -> (Double.parseDouble(a) >= Double.parseDouble(b)) ? 1 : 0);
+        itemPriceColumn.setComparator((a, b) -> (Double.parseDouble(
+                a.replace("$","")) >=
+                Double.parseDouble(b.replace("$",""))) ? 1 : 0);
 
         //initialize the tableView
         tableView.setItems(observableList);

@@ -40,11 +40,11 @@ public class FilesInputOutput {
             //serNumItem1   <tab> nameItem1 <tab> priceItem1
             //serNumItem2   <tab> nameItem2 <tab> priceItem2 ...
             //**************************************************************
-            writer.format("%s\t%s\t%s%n","Serial Number","Name","Value");
+            writer.format("%s\t%s\t%s%n","Serial Number","Name","Value($)");
             for (ItemObject itemObject : list) {
-                writer.format("%s\t%s\t%s%s%n", itemObject.getSerialNumber(),
-                        itemObject.getName(), "$",
-                        String.format("%.2f", Double.parseDouble(itemObject.getPrice()))
+                writer.format("%s\t%s\t%s%n", itemObject.getSerialNumber(),
+                        itemObject.getName(),
+                        String.format("%.2f", itemObject.getPriceDouble())
                 );
             }
             //close writer
@@ -88,13 +88,14 @@ public class FilesInputOutput {
     public void saveListAsHTML(File file, List<ItemObject> list){
         //using J2HTML,to create a html format
         //make a String that contains everything in it
+        String alignLeft = "text-align: left;";
         String html = html(head(
                 title("InventoryApplication")),     //declaring the title
                 body(
                         table(
-                        th("Serial Number").withStyle("text-align: left;"),            //set table headers
-                        th("Name").withStyle("text-align: left;"),
-                        th("Value").withStyle("text-align: left;"),
+                        th("Serial Number").withStyle(alignLeft),            //set table headers
+                        th("Name").withStyle(alignLeft),
+                        th("Value").withStyle(alignLeft),
                         tbody(
                                 each(list, i -> tr(         //loop through the body to display each values
                                         td(i.getSerialNumber()),
@@ -171,6 +172,7 @@ public class FilesInputOutput {
         String number;
         String name;
         double price;
+        String temp;
         try {
             //parse to Document class with Jsoup
             Document document = Jsoup.parse(file,null);
@@ -187,7 +189,9 @@ public class FilesInputOutput {
                 //index 1 is item's name
                 name = rowItems.get(1).text();
                 //index 2 is item's price
-                price = Double.parseDouble(rowItems.get(2).text());
+                temp = rowItems.get(2).text();
+                temp = temp.replace("$","");
+                price = Double.parseDouble(temp);
                 //create a new ItemObject with the information, add to the list
                 list.add(new ItemObject(number,name,price));
             }

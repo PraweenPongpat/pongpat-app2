@@ -37,7 +37,7 @@ public class ItemObject {
         return name;
     }
     public String getPrice() {
-        return String.format("%.2f",price);
+        return String.format("$%.2f",price);
     }
     public double getPriceDouble() {
         return price;

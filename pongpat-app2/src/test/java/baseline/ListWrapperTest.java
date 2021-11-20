@@ -99,7 +99,7 @@ class ListWrapperTest {
         //test against requirement#7 edit a name
         assertEquals("newName",listWrapper.getListOfItem().get(0).getName());
         //test against requirement#5 edit a price
-        assertEquals("100.01",listWrapper.getListOfItem().get(0).getPrice());
+        assertEquals("$100.01",listWrapper.getListOfItem().get(0).getPrice());
     }
 
     //test against requirement#11, search by serial number

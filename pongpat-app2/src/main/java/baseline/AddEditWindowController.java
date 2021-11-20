@@ -136,9 +136,10 @@ public class AddEditWindowController {
             //set itemNumberTextField to the 'serialNumber' String contained in the list within the given index
             itemNumberTextField.setText(listWrapper.getListOfItem().get(index).getSerialNumber());
             //set itemPriceTextField to the 'Price' double contained in the list within the given index
-            itemPriceTextField.setText(listWrapper.getListOfItem().get(index).getPrice());
+            String temp = listWrapper.getListOfItem().get(index).getPrice();
+            temp = temp.replace("$","");
+            itemPriceTextField.setText(temp);
         }
-
     }
 
     private void changeScene() {
