@@ -1,3 +1,8 @@
+/*
+ *  UCF COP3330 Fall 2021 Application Assignment 2 Solution
+ *  Copyright 2021 Praween Pongpat
+ */
+
 package baseline;
 
 import org.junit.jupiter.api.Test;
@@ -135,7 +140,7 @@ class ListWrapperTest {
 
     //test against requirement#12, search by name (name can be the same)
     @Test
-    void searchSerialNameTest() {
+    void searchNameTest() {
         //add items to the list
         listWrapper.addItemToList("A-AAA-AAA-AAA","name0","100.05");
         listWrapper.addItemToList("B-BBB-BBB-BBB","name1","500.99");

@@ -166,7 +166,7 @@ public class MainWindowController {
     @FXML
     void loadButtonPushed() {
         //when load button is pushed, we will be calling a fileChooser to get a File from it
-        fileChooser.setTitle("save file");
+        fileChooser.setTitle("load file");
         Stage stage = (Stage) errorDisplayLabel.getScene().getWindow();
         file = fileChooser.showOpenDialog(stage);
 
